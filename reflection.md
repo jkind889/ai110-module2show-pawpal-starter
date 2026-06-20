@@ -7,6 +7,15 @@
 - Briefly describe your initial UML design.
 - What classes did you include, and what responsibilities did you assign to each?
 
+I designed 6 classes based off real world examples
+
+Owner - a class that holds a list of Pet objects and methods to add a pet and fetch a list of scheduled tasks
+Pet - a class that holds a pets name, species, breed and age as well as a list of task objects. Theres also methods to create add a task, remove tasks and get tasks by priority
+Task - Holds a task id, task name and duration and priority, validate() which returns a boolean
+WalkTask - holds distance, route notes, a boolean for a lesh and validate() which returns a boolean
+Scheduler - takes an Owner + Pet object and sorts tasks by priority, filters by available times and produces of a list of ScheduledTask objects
+ScheduledTask - takes a task object, a start time and an end time and a reason of the task
+
 **b. Design changes**
 
 - Did your design change during implementation?

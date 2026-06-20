@@ -1,15 +1,63 @@
 classDiagram
-    %% Replace the placeholders below with your actual classes, attributes, methods, and relationships.
-    %% Keep this file updated so it matches your final implementation.
+    %% Core classes for PawPal+ covering: adding a pet, managing tasks, and scheduling a walk
 
-    class ClassName {
-        +type attribute
-        +method() returnType
+    class Owner {
+        +str name
+        +str email
+        +int available_minutes
+        +list~Pet~ pets
+        +add_pet(pet: Pet) None
+        +get_daily_plan() list~ScheduledTask~
     }
 
-    class AnotherClass {
-        +type attribute
-        +method() returnType
+    class Pet {
+        +str name
+        +str species
+        +str breed
+        +int age_years
+        +list~Task~ tasks
+        +add_task(task: Task) None
+        +remove_task(task_id: str) None
+        +get_tasks_by_priority() list~Task~
     }
 
-    ClassName --> AnotherClass : relationship
+    class Task {
+        +str task_id
+        +str name
+        +int duration_minutes
+        +str priority
+        +bool is_recurring
+        +str recurrence
+        +validate() bool
+    }
+
+    class WalkTask {
+        +float distance_km
+        +str route_notes
+        +bool needs_leash
+        +validate() bool
+    }
+
+    class Scheduler {
+        +Owner owner
+        +Pet pet
+        +int available_minutes
+        +schedule(tasks: list~Task~) list~ScheduledTask~
+        +fits_in_time(task: Task, remaining: int) bool
+        +sort_by_priority(tasks: list~Task~) list~Task~
+    }
+
+    class ScheduledTask {
+        +Task task
+        +str start_time
+        +str end_time
+        +str reasoning
+    }
+
+    Owner "1" --> "1..*" Pet : owns
+    Pet "1" --> "0..*" Task : has
+    WalkTask --|> Task : extends
+    Scheduler --> Owner : uses
+    Scheduler --> Pet : schedules for
+    Scheduler "1" --> "0..*" ScheduledTask : produces
+    ScheduledTask --> Task : wraps
