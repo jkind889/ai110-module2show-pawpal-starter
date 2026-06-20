@@ -31,10 +31,19 @@ Priority into an enum instead of string
 - What constraints does your scheduler consider (for example: time, priority, preferences)?
 - How did you decide which constraints mattered most?
 
+
+Task validity(ie if a task is formatted properly)
+Owner availability - The remaining time an owner has to complete task
+
+I prioritised the owner's availability since that drives everything essentially and task validity so broken tasks aren't considered
+
+
 **b. Tradeoffs**
 
 - Describe one tradeoff your scheduler makes.
 - Why is that tradeoff reasonable for this scenario?
+
+Priority is greatly considered so a long high priority tasks can overshadow multiple short low priority tasks, It's a more simipler implementation for the current needs of the app
 
 ---
 

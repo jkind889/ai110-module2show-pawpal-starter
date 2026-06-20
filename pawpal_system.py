@@ -1,4 +1,5 @@
 from enum import Enum
+import copy
 
 
 class Priority(Enum):
@@ -16,6 +17,20 @@ class Task:
         self.priority = priority
         self.is_recurring = is_recurring
         self.recurrence = recurrence
+        self.is_completed: bool = False
+
+    def mark_completed(self) -> "Task | None":
+        """Mark this task done and return a fresh next-occurrence instance for daily/weekly tasks.
+
+        Returns a copy reset to incomplete with a derived task_id, or None if non-recurring.
+        """
+        self.is_completed = True
+        if not self.is_recurring or self.recurrence not in ("daily", "weekly"):
+            return None
+        next_task = copy.copy(self)
+        next_task.task_id = f"{self.task_id}_next"
+        next_task.is_completed = False
+        return next_task
 
     def validate(self) -> bool:
         """Return True if task_id, name, positive duration, and valid priority are all set."""
@@ -138,6 +153,45 @@ class Scheduler:
     def sort_by_priority(self, tasks: list[Task]) -> list[Task]:
         """Return tasks sorted from highest to lowest priority value."""
         return sorted(tasks, key=lambda t: t.priority.value, reverse=True)
+
+    def detect_conflicts(self, scheduled_tasks: list[ScheduledTask]) -> list[str]:
+        """Return warning messages for any pairs of tasks whose time windows overlap.
+
+        Two tasks conflict when one starts before the other ends, regardless of
+        whether they belong to the same pet or different pets.
+        """
+        warnings: list[str] = []
+        for i, a in enumerate(scheduled_tasks):
+            for b in scheduled_tasks[i + 1:]:
+                if a.start_time < b.end_time and b.start_time < a.end_time:
+                    warnings.append(
+                        f"CONFLICT: '{a.task.name}' ({a.start_time}–{a.end_time}) "
+                        f"overlaps with '{b.task.name}' ({b.start_time}–{b.end_time})"
+                    )
+        return warnings
+
+    def sort_by_time(self, scheduled_tasks: list[ScheduledTask]) -> list[ScheduledTask]:
+        """Return scheduled tasks sorted by start_time ascending."""
+        return sorted(scheduled_tasks, key=lambda st: st.start_time)
+
+    def sort_tasks_by_duration(self, tasks: list[Task]) -> list[Task]:
+        """Return tasks sorted by duration_minutes ascending."""
+        return sorted(tasks, key=lambda t: t.duration_minutes)
+
+    def filter_tasks(self, tasks: list[Task], completed: bool | None = None,
+                     pet_name: str | None = None) -> list[Task]:
+        """Return tasks matching the given completion status and/or pet name.
+
+        completed: if provided, keep only tasks where is_completed matches.
+        pet_name: if provided, keep only tasks belonging to a pet with that name.
+        """
+        result = tasks
+        if completed is not None:
+            result = [t for t in result if t.is_completed == completed]
+        if pet_name is not None:
+            pet_task_ids = {t.task_id for t in self.pet.tasks} if self.pet.name == pet_name else set()
+            result = [t for t in result if t.task_id in pet_task_ids]
+        return result
 
     @staticmethod
     def _minutes_to_time(total_minutes: int) -> str:

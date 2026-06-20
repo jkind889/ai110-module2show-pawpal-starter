@@ -41,5 +41,28 @@ def main():
 
     print(f"\n{'='*40}\n")
 
+    # Conflict detection test — two tasks manually pinned to overlapping windows
+    print("Conflict Detection Test")
+    print(f"{'='*40}")
+    conflict_task_a = ScheduledTask(
+        Task("c1", "Twin: Feeding", 10, Priority.HIGH), "08:00", "08:10"
+    )
+    conflict_task_b = ScheduledTask(
+        Task("c2", "Yugi: Feeding", 10, Priority.HIGH), "08:05", "08:15"
+    )
+    non_overlapping = ScheduledTask(
+        Task("c3", "Bob: Grooming", 20, Priority.MEDIUM), "09:00", "09:20"
+    )
+
+    scheduler = Scheduler(owner, bob)
+    conflicts = scheduler.detect_conflicts([conflict_task_a, conflict_task_b, non_overlapping])
+
+    if conflicts:
+        for warning in conflicts:
+            print(f"  {warning}")
+    else:
+        print("  No conflicts detected.")
+    print(f"{'='*40}\n")
+
 
 main()
