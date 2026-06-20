@@ -7,7 +7,7 @@ classDiagram
         +int available_minutes
         +list~Pet~ pets
         +add_pet(pet: Pet) None
-        +get_daily_plan() list~ScheduledTask~
+        +get_daily_plan(pet: Pet) list~ScheduledTask~
     }
 
     class Pet {
@@ -21,11 +21,18 @@ classDiagram
         +get_tasks_by_priority() list~Task~
     }
 
+    class Priority {
+        <<enumeration>>
+        LOW
+        MEDIUM
+        HIGH
+    }
+
     class Task {
         +str task_id
         +str name
         +int duration_minutes
-        +str priority
+        +Priority priority
         +bool is_recurring
         +str recurrence
         +validate() bool
@@ -54,6 +61,7 @@ classDiagram
         +str reasoning
     }
 
+    Task --> Priority : uses
     Owner "1" --> "1..*" Pet : owns
     Pet "1" --> "0..*" Task : has
     WalkTask --|> Task : extends

@@ -20,7 +20,8 @@ ScheduledTask - takes a task object, a start time and an end time and a reason o
 
 - Did your design change during implementation?
 - If yes, describe at least one change and why you made it.
-
+Owner class has no path to scheduler since it owns no Scheduler instance and takes no pet argument
+Priority into an enum instead of string
 ---
 
 ## 2. Scheduling Logic and Tradeoffs
