@@ -93,23 +93,26 @@ Tests cover, scheduling a pet with no tasks, a pet with two overlapping task tim
 
 ## 📐 Smarter Scheduling
 
-> Fill in once you've implemented scheduling logic.
-
 | Feature | Method(s) | Notes |
 |---------|-----------|-------|
-| Task sorting | | e.g., by priority, duration |
-| Filtering | | e.g., skip tasks if time runs out |
-| Conflict handling | | e.g., overlapping time slots |
-| Recurring tasks | | e.g., daily vs. weekly |
+| Sort by priority | `Scheduler.sort_by_priority()`, `Pet.get_tasks_by_priority()` | Tasks sorted HIGH → MEDIUM → LOW using `Priority` enum integer values; both the `Scheduler` and `Pet` expose this independently |
+| Sort by duration | `Scheduler.sort_tasks_by_duration()` | Secondary sort that orders tasks shortest → longest, useful for fitting more tasks into a constrained time window |
+| Sort scheduled by time | `Scheduler.sort_by_time()` | Reorders already-scheduled tasks chronologically by `start_time` before displaying them |
+| Greedy time-budget filtering | `Scheduler.schedule()` via `Scheduler.fits_in_time()` | Iterates tasks in priority order and skips any task whose `duration_minutes` exceeds the owner's remaining available minutes; skipped tasks are surfaced in the UI |
+| Task validation filtering | `Task.validate()` / `WalkTask.validate()` | Tasks with missing IDs, empty names, non-positive durations, or invalid priority values are silently skipped during scheduling |
+| Completion + pet-name filtering | `Scheduler.filter_tasks()` | Filters a task list by `is_completed` status and/or pet name, enabling views of pending vs. done tasks per pet |
+| Conflict detection | `Scheduler.detect_conflicts()` | O(n²) pairwise scan of scheduled tasks; flags any pair where one task's window overlaps another using the interval overlap condition (`a.start < b.end and b.start < a.end`) |
+| Recurring tasks | `Task.mark_completed()` | Marking a `daily` or `weekly` recurring task complete returns a cloned next-occurrence instance with `is_completed = False`, allowing the recurrence chain to continue |
 
 ## 📸 Demo Walkthrough
 
-Describe your app in numbered steps so a reader can follow along without watching a video:
-
-1. <!-- Describe this step -->
-2. <!-- Describe this step -->
-3. <!-- Describe this step -->
-4. <!-- Describe this step -->
-5. <!-- Add more steps as needed -->
+1. **Enter owner info** — Type the owner's name and set their daily availability in minutes (e.g., 120 min). This acts as the hard time budget for the scheduler.
+2. **Enter pet info** — Type the pet's name and select its species. The schedule is generated per pet.
+3. **Add tasks** — For each care task (walk, feeding, medication, etc.), enter a title, duration in minutes, and priority (low / medium / high), then click **Add task**. The task appears in the unsorted task table below.
+4. **Review the task list** — The table shows all added tasks before any scheduling logic runs. Use **Clear all tasks** to start over.
+5. **Generate the schedule** — Click **Build schedule**. The app first displays tasks re-ordered by priority (HIGH → MEDIUM → LOW), then runs the greedy scheduler.
+6. **Read the daily plan** — Each scheduled task is shown as a card with its time window (`08:00 → 08:30`), priority badge, and the scheduling rationale. Tasks are sorted chronologically.
+7. **Check for skipped tasks** — If any task's duration exceeded the remaining availability budget, it appears in the **Skipped Tasks** section with an explanation.
+8. **Check for conflicts** — The app runs overlap detection across all scheduled tasks and either lists any conflicts found or confirms "No scheduling conflicts detected."
 
 **Screenshot or video** *(optional)*: <!-- Insert a screenshot or link to a demo video here -->

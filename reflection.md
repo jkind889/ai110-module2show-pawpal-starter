@@ -54,10 +54,15 @@ Priority is greatly considered so a long high priority tasks can overshadow mult
 - How did you use AI tools during this project (for example: design brainstorming, debugging, refactoring)?
 - What kinds of prompts or questions were most helpful?
 
+I used AI to design the UML as well as the classes for the project. I also used AI to assist with implemeenting refactoring and test logic
+The most useful prompts where the prompts where I questioned the AI's logic since it gave me a deeper understanding
 **b. Judgment and verification**
 
 - Describe one moment where you did not accept an AI suggestion as-is.
 - How did you evaluate or verify what the AI suggested?
+
+I didn't accept an AI suggestion as is when designed the classes since it introduced logic that was overly complex for the current implementation needed for the app
+
 
 ---
 
@@ -68,10 +73,15 @@ Priority is greatly considered so a long high priority tasks can overshadow mult
 - What behaviors did you test?
 - Why were these tests important?
 
+I tested edge cases like overlapping tasks, a pet not existing and just the full expected behavior of the app
+These tests are important because a user may accidentally schedule a task for the same time without realizing so having this guard/test to check protects the user incase this happens 
+
 **b. Confidence**
 
 - How confident are you that your scheduler works correctly?
 - What edge cases would you test next if you had more time?
+4/5 in confidence 
+I'd probably test the owner methods if a owner has no pets and sorting by priority
 
 ---
 
@@ -81,10 +91,15 @@ Priority is greatly considered so a long high priority tasks can overshadow mult
 
 - What part of this project are you most satisfied with?
 
+I'm most satisfied with the structure, I am trying to improve designing systems and considering tradeoffs.
+
 **b. What you would improve**
 
 - If you had another iteration, what would you improve or redesign?
+I'd probably reduce some of the complexity, the app could be simpler overall
 
 **c. Key takeaway**
 
 - What is one important thing you learned about designing systems or working with AI on this project?
+
+I learned to consider tradeoffs more and realize that some edge cases are okay to leave alone for a v1 implementation
